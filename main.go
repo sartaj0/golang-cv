@@ -45,6 +45,5 @@ func main(){
 
 
 	out.ImWriteGray("./output.png", thresh)
-	out.ImWrite("./output2.png", img)
 
 }
