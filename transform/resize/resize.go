@@ -3,6 +3,7 @@ package resize
 import (
 	"fmt"
 	"math"
+	"sync"
 	"gocv/num"
 	"gocv/types"
 )
@@ -12,7 +13,6 @@ func nearest_neighbour_resize(img_data types.ColorImage, height int, width int)t
 	h, w, _ := num.Shape(img_data)
 
 	arr := num.CreateArray(height, width, len(img_data[0][0]))
-	fmt.Println(height, width, h, w)
 	alpha_w :=  float64(width - 1) / float64(w - 1) 
 	alpha_h :=  float64(height - 1) / float64(h - 1)
 
@@ -25,6 +25,30 @@ func nearest_neighbour_resize(img_data types.ColorImage, height int, width int)t
 			arr[y][x] = img_data[new_y][new_x]
 		}
 	}
+	return arr
+}
+
+func nearest_neighbour_resize_optimized(img_data types.ColorImage, height int, width int) types.ColorImage {
+	h, w, _ := num.Shape(img_data)
+	var wg sync.WaitGroup
+	arr := num.CreateArray(height, width, len(img_data[0][0]))
+
+	alpha_w := (w - 1) * 1000 / (width - 1)
+	alpha_h := (h - 1) * 1000 / (height - 1)
+
+	for y := range arr {
+
+		wg.Add(1)
+		go func(y int){
+			defer wg.Done()
+			for x := range arr[0] {
+				new_x := x * alpha_w / 1000
+				new_y := y * alpha_h / 1000
+				arr[y][x] = img_data[new_y][new_x]
+			}
+		}(y)
+	}
+	wg.Wait()
 	return arr
 }
 
@@ -42,6 +66,6 @@ func Resize(img_data types.ColorImage, height int, width int) types.ColorImage {
 		width = int(math.Round((float64(height) * float64(w)) / (float64(h))))
 	}
 
-	arr := nearest_neighbour_resize(img_data, height, width)
+	arr := nearest_neighbour_resize_optimized(img_data, height, width)
 	return arr
 }

@@ -1,7 +1,6 @@
 package thresh
 
 import (
-	"fmt"
 	"gocv/types"
 
 	"sync"
@@ -18,7 +17,6 @@ const (
 
 func Thresholding(img_data types.GrayImage, threshold types.ImageType, max_val types.ImageType, thresh_type int) types.GrayImage {
 
-	fmt.Println(thresh_type)
 	h, w := len(img_data), len(img_data[0])
 	thresh_img := make(types.GrayImage, h)
 

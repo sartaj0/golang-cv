@@ -4,6 +4,7 @@ import (
 	"math"
 	"gocv/num"
 	"gocv/types"
+	"sync"
 )
 
 func RotateImage90(img_data types.ColorImage, clockwise bool) types.ColorImage {
@@ -41,10 +42,8 @@ func RotateImageDegree(img_data types.ColorImage, degree float64) types.ColorIma
 	angle := (degree * math.Pi) / 180
 
 	h, w, c := num.Shape(img_data)
-	var newx, newy int
 
 	halfW, halfH := w/2, h/2
-
 
 	x1, y1 := num.RotatePoints(- halfW, h - halfH, angle)
 	x2, y2 := num.RotatePoints(w - halfW, h - halfH, angle)
@@ -59,25 +58,37 @@ func RotateImageDegree(img_data types.ColorImage, degree float64) types.ColorIma
 
 	arr := num.CreateArray(new_h, new_w, c)
 
+	var wg sync.WaitGroup
 	for y := range arr{
-		for x := range arr[0]{
-			adjx := x - (new_w / 2) 
-			adjy := new_h - (new_h / 2) - y
 
-			x_f, y_f := num.RotatePoints(adjx, adjy, -angle)
-			newx, newy = int(math.Round(x_f)), int(math.Round(y_f))
+		wg.Add(1)
 
+		go func(y int){
 
-			newy = h - halfH - newy 
-			newx = halfW + newx 
+			defer wg.Done()
+
+			var newx, newy, adjx, adjy  int
+			var x_f, y_f float64
 			
-			if newy < 0 || newy >= len(img_data) || newx < 0 || newx >= len(img_data[0]) {
-				continue
-			}
-			arr[y][x] = img_data[newy][newx]
-		}
+			for x := range arr[0]{
+				adjx = x - (new_w / 2) 
+				adjy = new_h - (new_h / 2) - y
 
+				x_f, y_f = num.RotatePoints(adjx, adjy, -angle)
+				newx, newy = int(math.Round(x_f)), int(math.Round(y_f))
+
+
+				newy = h - halfH - newy 
+				newx = halfW + newx 
+				
+				if newy < 0 || newy >= len(img_data) || newx < 0 || newx >= len(img_data[0]) {
+					continue
+				}
+				arr[y][x] = img_data[newy][newx]
+			}
+		}(y)
 	}
+	wg.Wait()
 
 	return arr
 }

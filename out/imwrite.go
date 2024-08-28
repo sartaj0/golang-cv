@@ -10,20 +10,7 @@ import (
 	"gocv/types"
 )
 
-/*
-func processArray(arr interface{}) {
-    switch v := arr.(type) {
-    case [][][]uint8:
-        fmt.Println("Received a 3D array")
-        // Process 3D array
-    case [][]uint8:
-        fmt.Println("Received a 2D array")
-        // Process 2D array
-    default:
-        fmt.Println("Unsupported type")
-    }
-}
-*/
+
 
 func ImWrite(filename string, image_data types.ColorImage){
 	height := len(image_data)
