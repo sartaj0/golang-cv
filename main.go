@@ -2,14 +2,19 @@ package main
 
 import (
 	"fmt"
+
+	
 	"gocv/cvt_color"
-	"gocv/image_processing/thresh"
+
 	"gocv/out"
 	"gocv/read"
+	
 
-	"gocv/image_processing/blur"
 	"gocv/transform/resize"
 	"gocv/transform/rotate"
+
+	"gocv/image_processing/blur"
+	"gocv/image_processing/thresh"
 
 	"time"
 )
@@ -18,10 +23,8 @@ import (
 
 func main(){
 	// img_path := "test_folder/images/image1.png"
-	// img_path := "E:/Pictures/Images/558918.jpg"
+	// img_path := "test_folder/images/558918.jpg"
 	img_path := "test_folder/images/download5.png"
-	// img_path := "E:/dataset/Face/Bolly/Faces/Akshay Kumar/Akshay Kumar_0.jpg"
-	// img_path := "E:/Pictures/white.jpg"
 
 	
 
@@ -33,9 +36,9 @@ func main(){
 
 
 
-	img = resize.Resize(img, 0, 1000)
-	img = rotate.RotateImageDegree(img, 360)
-	img, _ = blur.GaussianBlur(img, 9)
+	img = resize.Resize(img, 0, 400)
+	img = rotate.RotateImageDegree(img, 90)
+	img, _ = blur.GaussianBlur(img, 25)
 	gray := cvt_color.RGBToGray(img)
 	
 	thresh := thresh.Thresholding(gray, 120, 255, thresh.THRESH_BINARY)
@@ -44,6 +47,8 @@ func main(){
 	fmt.Println("This function took", timeElapsed, "time")
 
 
-	out.ImWriteGray("./output.png", thresh)
+	out.ImWriteGray("test_folder/output/thresh.png", thresh)
+	out.ImWriteGray("test_folder/output/gray.png", gray)
+	out.ImWrite("test_folder/output/rgb.png", img)
 
 }

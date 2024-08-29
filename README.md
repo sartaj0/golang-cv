@@ -44,7 +44,7 @@
 - [ ] Lapacian
 
 ## Feature Matching
-- [ ]SIFT
-- [ ]SURF
-- [ ]FAST
-- [ ]ORB
+- [ ] SIFT
+- [ ] SURF
+- [ ] FAST
+- [ ] ORB

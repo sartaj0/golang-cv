@@ -7,38 +7,37 @@ import (
 	"sync"
 )
 
-func MedianBlur(img_data types.ColorImage, kernel_size int) (types.ColorImage, error ){
+func MedianBlur(img_data types.ColorImage, kernel_size int) (types.ColorImage, error) {
 	h, w, c := num.Shape(img_data)
 
-	arr := num.CreateArray(h, w, c)
-	if kernel_size % 2 == 0 || kernel_size < 1{
+	arr := num.CreateArray3D(h, w, c)
+	if kernel_size%2 == 0 || kernel_size < 1 {
 		return nil, errors.New("kernel size cannot be even, 0 or negative number")
 	}
 	kernel_radius := kernel_size / 2
-	
+
 	var wg sync.WaitGroup
 
 	for y := range img_data {
 		wg.Add(1)
-		go func (y int){
+		go func(y int) {
 			defer wg.Done()
 
-
-			for x := range img_data[0]{
+			for x := range img_data[0] {
 				var r, g, b []types.ImageType
-				for i := y - kernel_radius; i <= y+kernel_radius; i++{
-					for j := x - kernel_radius; j <= x+kernel_radius; j++{
-						if j < 0 || j >=w{
+				var px, py int
+
+				for i := 0; i < kernel_size; i++ {
+					for j := 0; j < kernel_size; j++ {
+						px = x + j - kernel_radius
+						py = y + i - kernel_radius
+
+						if px >= w || px < 0 || py >= h || py < 0 {
 							continue
 						}
-
-						if i < 0 || i >=h {
-							continue
-						}
-
-						r = append(r, img_data[i][j][0])
-						g = append(g, img_data[i][j][1])
-						b = append(b, img_data[i][j][2])
+						r = append(r, img_data[py][px][0])
+						g = append(g, img_data[py][px][1])
+						b = append(b, img_data[py][px][2])
 
 					}
 				}
@@ -51,5 +50,3 @@ func MedianBlur(img_data types.ColorImage, kernel_size int) (types.ColorImage, e
 	wg.Wait()
 	return arr, nil
 }
-
-
