@@ -1,22 +1,23 @@
 package rotate
 
 import (
-	"math"
 	"gocv/num"
 	"gocv/types"
+	"math"
+	"sync"
 )
 
 func RotateImage90(img_data types.ColorImage, clockwise bool) types.ColorImage {
 
 	new_w, new_h, c := num.Shape(img_data)
-	arr := num.CreateArray(new_h, new_w, c)
+	arr := num.CreateArray3D(new_h, new_w, c)
 
-	for x := range img_data{
-		for y := range img_data[0]{
+	for x := range img_data {
+		for y := range img_data[0] {
 			if !clockwise {
-				arr[new_h -y -1][x] = img_data[x][y]
-			}else{
-				arr[y][new_w -x -1] = img_data[x][y]
+				arr[new_h-y-1][x] = img_data[x][y]
+			} else {
+				arr[y][new_w-x-1] = img_data[x][y]
 			}
 		}
 	}
@@ -26,9 +27,9 @@ func RotateImage90(img_data types.ColorImage, clockwise bool) types.ColorImage {
 
 func RotateImage180(img_data types.ColorImage) types.ColorImage {
 	h, w, c := num.Shape(img_data)
-	arr := num.CreateArray(h, w, c)
-	for y := range img_data{
-		for x := range img_data[0]{
+	arr := num.CreateArray3D(h, w, c)
+	for y := range img_data {
+		for x := range img_data[0] {
 			arr[y][x] = img_data[h-y-1][w-x-1]
 		}
 	}
@@ -36,20 +37,17 @@ func RotateImage180(img_data types.ColorImage) types.ColorImage {
 
 }
 
-
 func RotateImageDegree(img_data types.ColorImage, degree float64) types.ColorImage {
 	angle := (degree * math.Pi) / 180
 
 	h, w, c := num.Shape(img_data)
-	var newx, newy int
 
 	halfW, halfH := w/2, h/2
 
-
-	x1, y1 := num.RotatePoints(- halfW, h - halfH, angle)
-	x2, y2 := num.RotatePoints(w - halfW, h - halfH, angle)
-	x3, y3 := num.RotatePoints(w - halfW, - halfH, angle)
-	x4, y4 := num.RotatePoints(- halfW, - halfH, angle)
+	x1, y1 := num.RotatePoints(-halfW, h-halfH, angle)
+	x2, y2 := num.RotatePoints(w-halfW, h-halfH, angle)
+	x3, y3 := num.RotatePoints(w-halfW, -halfH, angle)
+	x4, y4 := num.RotatePoints(-halfW, -halfH, angle)
 
 	new_adj_x := []float64{x1, x2, x3, x4}
 	new_adj_y := []float64{y1, y2, y3, y4}
@@ -57,28 +55,38 @@ func RotateImageDegree(img_data types.ColorImage, degree float64) types.ColorIma
 	new_w := int(math.Round(math.Abs(num.Max(new_adj_x) - num.Min(new_adj_x))))
 	new_h := int(math.Round(math.Abs(num.Max(new_adj_y) - num.Min(new_adj_y))))
 
-	arr := num.CreateArray(new_h, new_w, c)
+	arr := num.CreateArray3D(new_h, new_w, c)
 
-	for y := range arr{
-		for x := range arr[0]{
-			adjx := x - (new_w / 2) 
-			adjy := new_h - (new_h / 2) - y
+	var wg sync.WaitGroup
+	for y := range arr {
 
-			x_f, y_f := num.RotatePoints(adjx, adjy, -angle)
-			newx, newy = int(math.Round(x_f)), int(math.Round(y_f))
+		wg.Add(1)
 
+		go func(y int) {
 
-			newy = h - halfH - newy 
-			newx = halfW + newx 
-			
-			if newy < 0 || newy >= len(img_data) || newx < 0 || newx >= len(img_data[0]) {
-				continue
+			defer wg.Done()
+
+			var newx, newy, adjx, adjy int
+			var x_f, y_f float64
+
+			for x := range arr[0] {
+				adjx = x - (new_w / 2)
+				adjy = new_h - (new_h / 2) - y
+
+				x_f, y_f = num.RotatePoints(adjx, adjy, -angle)
+				newx, newy = int(math.Round(x_f)), int(math.Round(y_f))
+
+				newy = h - halfH - newy
+				newx = halfW + newx
+
+				if newy < 0 || newy >= len(img_data) || newx < 0 || newx >= len(img_data[0]) {
+					continue
+				}
+				arr[y][x] = img_data[newy][newx]
 			}
-			arr[y][x] = img_data[newy][newx]
-		}
-
+		}(y)
 	}
+	wg.Wait()
 
 	return arr
 }
-

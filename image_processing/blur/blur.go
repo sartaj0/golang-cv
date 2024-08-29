@@ -28,19 +28,19 @@ func AverageBlur(img_data types.ColorImage, kernel_size int) (types.ColorImage, 
 			for x := range img_data[0]{
 				arr[y][x] = make([]types.ImageType, c)
 				var r, g, b, num_cell uint
-				for i := y - kernel_radius; i <= y+kernel_radius; i++{
-					for j := x - kernel_radius; j <= x+kernel_radius; j++{
-						if j < 0 || j >=w{
+				var px, py int
+				for i := 0; i < kernel_size; i++ {
+					for j := 0; j < kernel_size; j++ {
+						px = x + j - kernel_radius
+						py = y + i - kernel_radius
+
+						if px >= w || px < 0 || py >= h || py < 0 {
 							continue
 						}
 
-						if i < 0 || i >=h {
-							continue
-						}
-
-						r += uint(img_data[i][j][0])
-						g += uint(img_data[i][j][1])
-						b += uint(img_data[i][j][2])
+						r += uint(img_data[py][px][0])
+						g += uint(img_data[py][px][1])
+						b += uint(img_data[py][px][2])
 
 						num_cell += 1
 					}

@@ -16,6 +16,9 @@
 - [ ] Horizontal Flip
 - [ ] Vertical Flip
 
+### Translate
+- [ ] Translate X
+- [ ] Translate Y
 ## Image Processing
 
 ### Thresholding
@@ -30,7 +33,7 @@
 ### Bluring
 - [x] Blur
 - [x] Median Blur
-- [ ] Gaussian Blur
+- [x] Gaussian Blur
 - [ ] Bi-Lateral Blur
 
 ### Feature Extraction
@@ -40,3 +43,8 @@
 - [ ] Sobel
 - [ ] Lapacian
 
+## Feature Matching
+- [ ] SIFT
+- [ ] SURF
+- [ ] FAST
+- [ ] ORB
