@@ -10,7 +10,7 @@ import (
 func GaussianBlur(img_data types.ColorImage, kernel_size int) (types.ColorImage, error) {
 	h, w, c := num.Shape(img_data)
 
-	gaussian_kernel := num.GetGaussianKernel(1, kernel_size)
+	gaussian_kernel := num.GetGaussianKernel(5, kernel_size)
 
 
 	arr := make(types.ColorImage, h)
