@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-func MedianBlur(img_data types.ColorImage, kernel_size int) (types.ColorImage, error) {
+func MedianBlur(img_data types.ImageArray, kernel_size int) (types.ImageArray, error) {
 	h, w, c := num.Shape(img_data)
 
 	arr := num.CreateArray3D(h, w, c)
@@ -24,7 +24,7 @@ func MedianBlur(img_data types.ColorImage, kernel_size int) (types.ColorImage, e
 			defer wg.Done()
 
 			for x := range img_data[0] {
-				var r, g, b []types.ImageType
+				var r, g, b, gray []types.ImageType
 				var px, py int
 
 				for i := 0; i < kernel_size; i++ {
@@ -35,15 +35,25 @@ func MedianBlur(img_data types.ColorImage, kernel_size int) (types.ColorImage, e
 						if px >= w || px < 0 || py >= h || py < 0 {
 							continue
 						}
-						r = append(r, img_data[py][px][0])
-						g = append(g, img_data[py][px][1])
-						b = append(b, img_data[py][px][2])
+						if c == 3{
+							r = append(r, img_data[py][px][0])
+							g = append(g, img_data[py][px][1])
+							b = append(b, img_data[py][px][2])
+						}else if c == 1{
+							gray = append(gray, img_data[py][px][0])
+						}
+
 
 					}
 				}
-				arr[y][x][0] = num.Median(r)
-				arr[y][x][1] = num.Median(g)
-				arr[y][x][2] = num.Median(b)
+				if c == 3{
+					arr[y][x][0] = num.Median(r)
+					arr[y][x][1] = num.Median(g)
+					arr[y][x][2] = num.Median(b)
+				}else if c == 1{
+					arr[y][x][0] = num.Median(gray)
+				}
+
 			}
 		}(y)
 	}

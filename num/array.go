@@ -5,8 +5,8 @@ import (
 	"sort"
 )
 
-func CreateArray3D(h int, w int, c int) types.ColorImage {
-	arr := make(types.ColorImage, h)
+func CreateArray3D(h int, w int, c int) types.ImageArray {
+	arr := make(types.ImageArray, h)
 	for y := range arr {
 		arr[y] = make([][]types.ImageType, w)
 		for x := range arr[y] {
@@ -16,15 +16,8 @@ func CreateArray3D(h int, w int, c int) types.ColorImage {
 	return arr
 }
 
-func CreateArray2D(h int, w int) types.GrayImage {
-	arr := make(types.GrayImage, h)
-	for y := range arr {
-		arr[y] = make([]types.ImageType, w)
-	}
-	return arr
-}
 
-func Shape(img_data types.ColorImage) (int, int, int) {
+func Shape(img_data types.ImageArray) (int, int, int) {
 	return len(img_data), len(img_data[0]), len(img_data[0][0])
 
 }

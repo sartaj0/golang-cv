@@ -40,7 +40,7 @@ func rgb_to_pixel(r uint32, g uint32, b uint32, a uint32) []types.ImageType {
 	return []types.ImageType{adjusted_r, adjusted_g, adjusted_b}
 }
 
-func ReadImage(img_path string) (types.ColorImage, error) {
+func ReadImage(img_path string) (types.ImageArray, error) {
 
 	img, err := read_image_from_path(img_path)
 	if err != nil {

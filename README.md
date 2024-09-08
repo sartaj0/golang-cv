@@ -40,8 +40,8 @@
 
 #### Edge Detecion
 - [ ] Canny
-- [ ] Sobel
-- [ ] Lapacian
+- [x] Sobel
+- [x] Lapacian
 
 ## Feature Matching
 - [ ] SIFT

@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-func RotateImage90(img_data types.ColorImage, clockwise bool) types.ColorImage {
+func RotateImage90(img_data types.ImageArray, clockwise bool) types.ImageArray {
 
 	new_w, new_h, c := num.Shape(img_data)
 	arr := num.CreateArray3D(new_h, new_w, c)
@@ -25,7 +25,7 @@ func RotateImage90(img_data types.ColorImage, clockwise bool) types.ColorImage {
 	return arr
 }
 
-func RotateImage180(img_data types.ColorImage) types.ColorImage {
+func RotateImage180(img_data types.ImageArray) types.ImageArray {
 	h, w, c := num.Shape(img_data)
 	arr := num.CreateArray3D(h, w, c)
 	for y := range img_data {
@@ -37,7 +37,7 @@ func RotateImage180(img_data types.ColorImage) types.ColorImage {
 
 }
 
-func RotateImageDegree(img_data types.ColorImage, degree float64) types.ColorImage {
+func RotateImageDegree(img_data types.ImageArray, degree float64) types.ImageArray {
 	angle := (degree * math.Pi) / 180
 
 	h, w, c := num.Shape(img_data)

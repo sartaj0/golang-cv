@@ -1,6 +1,6 @@
 package types
 
 type ImageType uint8
-type ColorImage [][][]ImageType
+type ImageArray [][][]ImageType
 
-type GrayImage [][]ImageType
+type ImageArrayFloat [][][]float64

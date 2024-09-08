@@ -7,23 +7,31 @@ import (
 	"sync"
 )
 
-func Sobel(img_data types.GrayImage, sobelx int, sobely int) types.GrayImage {
+func Sobel(img_data types.ImageArray, sobelx int, sobely int) types.ImageArray {
 	kernel_size := 3
 	kernel_radius := kernel_size / 2
 
-	h, w := len(img_data), len(img_data[0])
-	kernelx := [][]int{
+	h, w, _ := num.Shape(img_data)
+	kernelx := [][]float64{
 		{-1, 0, 1}, 
 		{-2, 0, 2}, 
 		{-1, 0, 1}}
 
-	kernely := [][]int{
+	kernely := [][]float64{
 		{-1, -2, -1},
 		{0,  0,  0},
 		{1,  2,  1}}
 	
 
-	arr := num.CreateArray2D(h, w)
+	arr := num.CreateArray3D(h, w, 1)
+
+	float_arr := make([][][]float64, h)
+	for y := range float_arr{
+		float_arr[y] = make([][]float64, w)
+		for x := range float_arr[0]{
+			float_arr[y][x] =  make([]float64, 1)
+		}
+	}
 
 	var wg sync.WaitGroup
 
@@ -33,7 +41,8 @@ func Sobel(img_data types.GrayImage, sobelx int, sobely int) types.GrayImage {
 			defer wg.Done()
 
 			for x := range img_data[0] {
-				var px, py, gx, gy int
+				var px, py int
+				var gx, gy float64
 
 				for i := 0; i < kernel_size; i++ {
 					for j := 0; j < kernel_size; j++ {
@@ -56,23 +65,25 @@ func Sobel(img_data types.GrayImage, sobelx int, sobely int) types.GrayImage {
 							}
 						}
 						if sobelx == 1 && sobely == 1{
-							gx += (int(img_data[py][px]) * kernelx[i][j])
-							gy += (int(img_data[py][px]) * kernely[i][j])
+							gx += (float64(img_data[py][px][0]) * kernelx[i][j])
+							gy += (float64(img_data[py][px][0]) * kernely[i][j])
 						}else if sobelx == 1 {
-							gx += (int(img_data[py][px]) * kernelx[i][j])
+							gx += (float64(img_data[py][px][0]) * kernelx[i][j])
 
 						}else{
-							gy += (int(img_data[py][px]) * kernely[i][j])
+							gy += (float64(img_data[py][px][0]) * kernely[i][j])
 						}
 
 					}
 				}
 				if sobelx == 1 && sobely == 1{
-					arr[y][x] = types.ImageType(math.Sqrt(math.Pow(float64(gx), 2.0) + math.Pow(float64(gy), 2.0)))
+					arr[y][x][0] = types.ImageType(math.Sqrt(gx * gx + gy * gy))
+					// arr[y][x][0] = types.ImageType(math.Atan2(gy, gx))
+					// arr[y][x][0] = types.ImageType(math.Abs(float64(gx)) + math.Abs(float64(gy)))
 				}else if sobelx == 1 {
-					arr[y][x] = types.ImageType(gx)
+					arr[y][x][0] = types.ImageType(gx)
 				}else{
-					arr[y][x] = types.ImageType(gy)
+					arr[y][x][0] = types.ImageType(gy)
 				}
 			}
 		}(y)

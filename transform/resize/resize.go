@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-func nearest_neighbour_resize(img_data types.ColorImage, height int, width int) types.ColorImage {
+func nearest_neighbour_resize(img_data types.ImageArray, height int, width int) types.ImageArray {
 
 	h, w, _ := num.Shape(img_data)
 
@@ -28,7 +28,7 @@ func nearest_neighbour_resize(img_data types.ColorImage, height int, width int) 
 	return arr
 }
 
-func nearest_neighbour_resize_optimized(img_data types.ColorImage, height int, width int) types.ColorImage {
+func nearest_neighbour_resize_optimized(img_data types.ImageArray, height int, width int) types.ImageArray {
 	h, w, _ := num.Shape(img_data)
 	var wg sync.WaitGroup
 	arr := num.CreateArray3D(height, width, len(img_data[0][0]))
@@ -52,7 +52,7 @@ func nearest_neighbour_resize_optimized(img_data types.ColorImage, height int, w
 	return arr
 }
 
-func Resize(img_data types.ColorImage, height int, width int) types.ColorImage {
+func Resize(img_data types.ImageArray, height int, width int) types.ImageArray {
 
 	h, w, _ := num.Shape(img_data)
 

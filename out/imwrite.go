@@ -1,4 +1,4 @@
-package out 
+package out
 
 import (
 	"fmt"
@@ -7,42 +7,32 @@ import (
 	"image/png"
 	"os"
 
+	"gocv/num"
 	"gocv/types"
 )
 
 
 
-func ImWrite(filename string, image_data types.ColorImage){
-	height := len(image_data)
-	width := len(image_data[0])
+func ImWrite(filename string, image_data types.ImageArray){
+	height, width, channels := num.Shape(image_data)
 
-	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	var img image.Image
 
-	for y := 0; y < height; y++ {
-		for x := 0; x < width; x++ {
-			r, g, b := image_data[y][x][0], image_data[y][x][1], image_data[y][x][2]
-			img.Set(x, y, color.RGBA{uint8(r), uint8(g), uint8(b), 255})
-		}
+	if channels == 3{
+		img = image.NewRGBA(image.Rect(0, 0, width, height))
+	}else if channels == 1{
+		img = image.NewGray(image.Rect(0, 0, width, height))
 	}
-	f, err := os.Create(filename)
-	if err != nil {
-        fmt.Println("You got error bro")
-        return
-    }
-    defer f.Close()
-    png.Encode(f, img)
-}
-
-
-func ImWriteGray(filename string, image_data types.GrayImage){
-	height := len(image_data)
-	width := len(image_data[0])
-
-	img := image.NewGray(image.Rect(0, 0, width, height))
-
+	
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			img.Set(x, y, color.Gray{uint8(image_data[y][x])})
+			if channels == 3{
+				r, g, b := image_data[y][x][0], image_data[y][x][1], image_data[y][x][2]
+				img.(*image.RGBA).Set(x, y, color.RGBA{uint8(r), uint8(g), uint8(b), 255})
+			}else if channels == 1 {
+				img.(*image.Gray).Set(x, y, color.Gray{uint8(image_data[y][x][0])})
+			}
+			
 		}
 	}
 	f, err := os.Create(filename)
