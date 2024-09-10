@@ -34,3 +34,20 @@ func Median(arr []types.ImageType) types.ImageType {
 	i := (len(arr) + 1) / 2
 	return arr[i]
 }
+
+func UniqueValueArray(img_data types.ImageArray) []types.ImageType{
+	
+	var arr []types.ImageType
+	arr_track := make(map[types.ImageType]bool)
+	for y := range img_data{
+		for x := range img_data[0]{
+			if arr_track[img_data[y][x][0]] {
+				continue
+			}
+			arr_track[img_data[y][x][0]] = true
+			arr = append(arr, img_data[y][x][0])
+		}
+	}
+	arr =SortArray(arr)
+	return arr
+}

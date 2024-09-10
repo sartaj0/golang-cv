@@ -32,3 +32,12 @@ func GetGaussianKernel(sigma float64, kernel_size int) [][]float64{
 
 	return gaussian_kernel
 }
+
+// TODO: Create kernel of any size
+func GetSobelXKernel(kernel_size int) [][]float64{
+	return [][]float64{{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}}
+}
+
+func GetSobelYKernel(kernel_size int) [][]float64{
+	return [][]float64{{-1, -2, -1}, {0,  0,  0}, {1,  2,  1}}
+}

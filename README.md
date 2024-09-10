@@ -36,12 +36,21 @@
 - [x] Gaussian Blur
 - [ ] Bi-Lateral Blur
 
-### Feature Extraction
-
-#### Edge Detecion
-- [ ] Canny
+### Edge Detecion
+- [x] Canny
 - [x] Sobel
 - [x] Lapacian
+
+### Morphological Operation
+- [ ] Dilation
+- [ ] Erosion
+- [ ] Opening
+- [ ] Closing
+- [ ] Morphological Gradient
+- [ ] Top Hat
+- [ ] Black Hat
+
+## Feature Extraction
 
 ## Feature Matching
 - [ ] SIFT
