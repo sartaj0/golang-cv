@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"gocv/cvt_color"
+	"gocv/transform/flip"
 
 	"gocv/io"
 
@@ -22,10 +23,12 @@ import (
 
 
 func main(){
-	// img_path := "test_folder/images/image1.png"
-	img_path := "test_folder/images/558918.jpg"
-	// img_path := "test_folder/images/download5.png"
-	// img_path := "test_folder/images/kitten.png"
+	var img_path string
+	// img_path = "test_folder/images/image1.png"
+	img_path = "test_folder/images/558918.jpg"
+	// img_path = "test_folder/images/coins.jpg"
+	// img_path = "test_folder/images/download5.png"
+	// img_path = "test_folder/images/kitten.png"
 
 	
 
@@ -37,7 +40,9 @@ func main(){
 
 	// img = resize.Resize(img, 0, 800)
 	// img = rotate.RotateImageDegree(img, 360)
-	img, _ = blur.GaussianBlur(img, 7, 5)
+
+	img = flip.FlipImage(img, false, true)
+	img, _ = blur.GaussianBlur(img, 5, 2)
 	// gray, _ = blur.AverageBlur(gray, 7)
 	gray := cvt_color.RGBToGray(img)
 	// gray, _ = blur.MedianBlur(gray, 7)
@@ -46,17 +51,21 @@ func main(){
 	
 	// thresh := thresh.Thresholding(gray, 225, 255, thresh.THRESH_BINARY_INV)
 	// edge_img := edge.Sobel(gray, 0, 1)
-	edge_img := edge.Canny(gray, 10, 30)
+	edge_img := edge.Canny(gray, 5, 10)
 	// edge_img, _ := edge.Laplacian(gray)
 	erosion_img := morph.Erosion(edge_img)
 	erosion_img = morph.Erosion(erosion_img)
 	dilated_img := morph.Dilation(edge_img)
+
+	
+	closing := morph.Erosion(dilated_img)
 
 	timeElapsed := time.Since(start)
 	fmt.Println("This function took", timeElapsed, "time")
 
 
 	// out.ImWrite("test_folder/output/thresh.png", thresh)
+	io.ImWrite("test_folder/output/closing.png", closing)
 	io.ImWrite("test_folder/output/erosion_img.png", erosion_img)
 	io.ImWrite("test_folder/output/dilated_img.png", dilated_img)
 	io.ImWrite("test_folder/output/edge.png", edge_img)

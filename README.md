@@ -13,8 +13,8 @@
 - [x] Resize
 
 ### Flip
-- [ ] Horizontal Flip
-- [ ] Vertical Flip
+- [x] Horizontal Flip
+- [x] Vertical Flip
 
 ### Translate
 - [ ] Translate X
@@ -42,18 +42,31 @@
 - [x] Lapacian
 
 ### Morphological Operation
-- [ ] Dilation
-- [ ] Erosion
-- [ ] Opening
-- [ ] Closing
+- [x] Dilation
+- [x] Erosion
+- [x] Opening
+- [x] Closing
 - [ ] Morphological Gradient
 - [ ] Top Hat
 - [ ] Black Hat
 
-## Feature Extraction
+## Feature Detection
+- [ ] Haris Corner Detector
+- [ ] Shi-Tomasi Corner Detector
+- [ ] FAST
+- [ ] ORB
 
-## Feature Matching
+## Feature Extraction
 - [ ] SIFT
 - [ ] SURF
 - [ ] FAST
 - [ ] ORB
+- [ ] BRIEF
+- [ ] HOG 
+- [ ] LBP
+- [ ] FREAK
+
+## Feature Matching
+- [ ] Brute Force Matcher
+- [ ] RANSAC
+- [ ] FlannBased 

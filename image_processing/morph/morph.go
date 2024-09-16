@@ -69,11 +69,18 @@ func morph(img_data types.ImageArray, kernel_size int, operation_type string) ty
 }
 
 func Erosion(img_data types.ImageArray) types.ImageArray{
-	return morph(img_data, 3, erosion_type)
+	return morph(img_data, 5, erosion_type)
 }
 
 
 func Dilation(img_data types.ImageArray) types.ImageArray{
-	return morph(img_data, 3, dilation_type)
+	return morph(img_data, 5, dilation_type)
 }
 
+func Opening(img_data types.ImageArray) types.ImageArray{
+	return morph(morph(img_data, 5, erosion_type), 5, dilation_type)
+}
+
+func Closing(img_data types.ImageArray) types.ImageArray{
+	return morph(morph(img_data, 5, dilation_type), 5, erosion_type)
+}
